@@ -1,0 +1,11 @@
+.centered {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#timer-canvas {
+    width: 50%;
+    border: 1px solid black;
+}

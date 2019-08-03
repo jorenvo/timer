@@ -5,13 +5,15 @@
     "main": "timer.ts",
     "scripts": {
         "prebuild": "prettier --list-different $PWD/src/*.ts && rm -rvf dist",
-        "build": "mkdir $PWD/dist && cp $PWD/src/*.html dist/ && tsc",
+        "build": "mkdir $PWD/dist && cp $PWD/src/*.html dist/ && npx postcss $PWD/src/*.css --use autoprefixer -d $PWD/dist/ && tsc",
         "env": "env"
     },
     "keywords": [],
     "author": "Joren Van Onder <joren@jvo.sh>",
     "license": "GPL-3.0-or-later",
     "devDependencies": {
+        "autoprefixer": "^9.6.1",
+        "postcss-cli": "^6.1.3",
         "prettier": "1.18.2"
     }
 }
