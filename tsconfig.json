@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "target": "esnext",
+        "module": "system",
+        "noImplicitAny": true,
+        "removeComments": true,
+        "noEmitOnError": true,
+        "outFile": "dist/js/timer.js",
+        "sourceMap": true,
+        "strict": true
+    },
+    "include": [
+        "src/*.ts"
+    ],
+    "exclude": [
+        "node_modules",
+        "**/*.spec.ts"
+    ]
+}
