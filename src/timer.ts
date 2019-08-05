@@ -247,8 +247,13 @@ class TimerCanvas extends HTMLCanvasElement {
     }, 200);
   }
 
-  private mousemove_handler(event: MouseEvent) {
-    const pos: Coordinate = new Coordinate(event.offsetX, event.offsetY);
+  private mousemove_handler(event: MouseEvent | Touch) {
+    const rect = (<Element>event.target).getBoundingClientRect();
+    const pos: Coordinate = new Coordinate(
+      event.pageX - rect.left,
+      event.pageY - rect.top
+    );
+    console.log(pos);
 
     // center pos
     pos.translate(-this.center.x, -this.center.y);
@@ -280,14 +285,29 @@ class TimerCanvas extends HTMLCanvasElement {
   }
 
   private handlers() {
+    const mousemove_handler = this.mousemove_handler.bind(this);
+    const touchmove_handler = (e: TouchEvent) => {
+      mousemove_handler(e.touches[0]);
+    };
+
     this.addEventListener("mouseup", () => {
-      this.removeEventListener("mousemove", this.mousemove_handler);
+      this.removeEventListener("mousemove", mousemove_handler);
+      this.drag_starting_angle = undefined;
+      this.drag_starting_remaining_seconds = undefined;
+    });
+
+    this.addEventListener("touchend", () => {
+      this.removeEventListener("touchmove", touchmove_handler);
       this.drag_starting_angle = undefined;
       this.drag_starting_remaining_seconds = undefined;
     });
 
     this.addEventListener("mousedown", () => {
-      this.addEventListener("mousemove", this.mousemove_handler);
+      this.addEventListener("mousemove", mousemove_handler);
+    });
+
+    this.addEventListener("touchstart", () => {
+      this.addEventListener("touchmove", touchmove_handler);
     });
 
     window.addEventListener("resize", this.setup_resolution.bind(this));
