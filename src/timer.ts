@@ -1,3 +1,23 @@
+const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+if (isSafari) {
+  window.alert(
+    "Sorry, this app uses customized built-in elements which are not supported in Safari. Please enjoy this cute rabbit instead."
+  );
+
+  const canvas = document.getElementById("timer-canvas");
+  if (canvas) {
+    const parent = canvas.parentNode;
+    if (parent) {
+      parent.removeChild(canvas);
+    }
+  }
+
+  const bunny = document.getElementById("bunny");
+  if (bunny) {
+    bunny.style.display = "block";
+  }
+}
+
 class Coordinate {
   private _x: number;
   private _y: number;
@@ -253,7 +273,6 @@ class TimerCanvas extends HTMLCanvasElement {
       event.pageX - rect.left,
       event.pageY - rect.top
     );
-    console.log(pos);
 
     // center pos
     pos.translate(-this.center.x, -this.center.y);
@@ -314,6 +333,7 @@ class TimerCanvas extends HTMLCanvasElement {
   }
 
   private setup() {
+    console.log("entered setup");
     this.render();
     this.handlers();
     this.animate_clock();

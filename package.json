@@ -5,7 +5,7 @@
     "main": "timer.ts",
     "scripts": {
         "prebuild": "prettier --list-different $PWD/src/*.ts && rm -rvf dist",
-        "build": "mkdir $PWD/dist && cp $PWD/src/*.html dist/ && npx postcss $PWD/src/*.css --use autoprefixer -d $PWD/dist/ && tsc",
+        "build": "mkdir $PWD/dist && cp $PWD/src/*.{html,jpg} dist/ && npx postcss $PWD/src/*.css --use autoprefixer -d $PWD/dist/ && tsc",
         "env": "env"
     },
     "keywords": [],

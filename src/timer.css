@@ -9,3 +9,8 @@
     width: 50%;
     border: 1px solid black;
 }
+
+#bunny {
+    display: none;
+    width: 50%;
+}
