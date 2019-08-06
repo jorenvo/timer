@@ -104,6 +104,11 @@ class TimerCanvas extends HTMLCanvasElement {
   }
 
   private set_remaining_seconds(s: number) {
+    // add hours until it's positive to deal with zero crossings
+    while (s < 0) {
+      s += 60 * 60;
+    }
+
     this.remaining_seconds = s;
     this.time_radians = this.seconds_to_radians(this.remaining_seconds);
   }
@@ -255,11 +260,11 @@ class TimerCanvas extends HTMLCanvasElement {
     clearTimeout(this.animation_timer);
     this.animation_timer = window.setInterval(() => {
       const secs_since_last_render = (Date.now() - this.prev_render_ms) / 1000;
-
-      if (this.remaining_seconds <= 0) {
+      this.render();
+      if (this.remaining_seconds - secs_since_last_render < 0) {
         clearTimeout(this.animation_timer);
+        this.set_remaining_seconds(0);
       } else {
-        this.render();
         this.set_remaining_seconds(
           this.remaining_seconds - secs_since_last_render
         );
