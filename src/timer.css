@@ -7,7 +7,8 @@
 
 #timer-canvas {
     width: 50%;
-    border: 1px solid black;
+    border: 0.5vw solid black;
+    border-radius: 15%;
 }
 
 #bunny {
