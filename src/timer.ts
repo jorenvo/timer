@@ -1,23 +1,3 @@
-const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-if (isSafari) {
-  window.alert(
-    "Sorry, this app uses customized built-in elements which are not supported in Safari. Please enjoy this cute rabbit instead."
-  );
-
-  const canvas = document.getElementById("timer-canvas");
-  if (canvas) {
-    const parent = canvas.parentNode;
-    if (parent) {
-      parent.removeChild(canvas);
-    }
-  }
-
-  const bunny = document.getElementById("bunny");
-  if (bunny) {
-    bunny.style.display = "block";
-  }
-}
-
 class Coordinate {
   private _x: number;
   private _y: number;
@@ -69,7 +49,8 @@ class Coordinate {
   }
 }
 
-class TimerCanvas extends HTMLCanvasElement {
+class TimerCanvas {
+  private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
   private center: Coordinate;
   private needs_full_render: boolean;
@@ -84,9 +65,10 @@ class TimerCanvas extends HTMLCanvasElement {
   private drag_starting_angle: number | undefined;
   private drag_starting_remaining_seconds: number | undefined;
 
-  constructor() {
-    super();
-    const context = this.getContext("2d");
+  constructor(canvas: HTMLCanvasElement) {
+    this.canvas = canvas;
+
+    const context = this.canvas.getContext("2d");
     if (!context) {
       throw new Error("could not get 2d context for canvas");
     }
@@ -97,9 +79,6 @@ class TimerCanvas extends HTMLCanvasElement {
     this.remaining_seconds = 2 * 60;
     this.needs_full_render = true;
     this.time_radians = this.seconds_to_radians(this.remaining_seconds);
-  }
-
-  connectedCallback() {
     this.setup();
   }
 
@@ -125,28 +104,35 @@ class TimerCanvas extends HTMLCanvasElement {
 
   private setup_resolution() {
     // todo replace with just clientWidth and Height
-    const client_width = this.clientWidth;
-    const client_height = this.clientHeight;
+    const client_width = this.canvas.clientWidth;
+    const client_height = this.canvas.clientHeight;
 
-    console.log("client size", this.clientWidth, this.clientHeight);
-    console.log("before", this.width, this.height);
+    console.log(
+      "client size",
+      this.canvas.clientWidth,
+      this.canvas.clientHeight
+    );
+    console.log("before", this.canvas.width, this.canvas.height);
 
-    if (this.width !== this.clientWidth || this.height !== this.clientHeight) {
-      this.width = this.clientWidth;
-      this.height = this.clientWidth;
-      this.center.x = this.width / 2;
-      this.center.y = this.height / 2;
-      this.ctx.clearRect(0, 0, this.width, this.height);
+    if (
+      this.canvas.width !== this.canvas.clientWidth ||
+      this.canvas.height !== this.canvas.clientHeight
+    ) {
+      this.canvas.width = this.canvas.clientWidth;
+      this.canvas.height = this.canvas.clientWidth;
+      this.center.x = this.canvas.width / 2;
+      this.center.y = this.canvas.height / 2;
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       this.needs_full_render = true;
     }
 
-    console.log("after", this.width, this.height);
+    console.log("after", this.canvas.width, this.canvas.height);
   }
 
   private setup_font() {
     this.ctx.textAlign = "center";
     this.ctx.textBaseline = "middle";
-    this.ctx.font = `${this.width * 0.05}px monospace`;
+    this.ctx.font = `${this.canvas.width * 0.05}px monospace`;
   }
 
   private render_clock() {
@@ -155,7 +141,7 @@ class TimerCanvas extends HTMLCanvasElement {
     const text_margin = 0.1;
     const mark_end_margin = 0.2;
     const mark_begin_margin = 0.3;
-    const diameter = this.height;
+    const diameter = this.canvas.height;
     let degrees = -Math.PI / 2;
 
     this.ctx.fillStyle = "black";
@@ -224,7 +210,7 @@ class TimerCanvas extends HTMLCanvasElement {
     this.ctx.arc(
       this.center.x,
       this.center.y,
-      this.height / 20,
+      this.canvas.height / 20,
       0,
       2 * Math.PI
     );
@@ -234,7 +220,7 @@ class TimerCanvas extends HTMLCanvasElement {
   }
 
   private render() {
-    if (this.width != this.height) {
+    if (this.canvas.width != this.canvas.height) {
       this.setup_resolution();
     }
 
@@ -264,6 +250,7 @@ class TimerCanvas extends HTMLCanvasElement {
       if (this.remaining_seconds - secs_since_last_render < 0) {
         clearTimeout(this.animation_timer);
         this.set_remaining_seconds(0);
+        this.render();
       } else {
         this.set_remaining_seconds(
           this.remaining_seconds - secs_since_last_render
@@ -314,24 +301,24 @@ class TimerCanvas extends HTMLCanvasElement {
       mousemove_handler(e.touches[0]);
     };
 
-    this.addEventListener("mouseup", () => {
-      this.removeEventListener("mousemove", mousemove_handler);
+    this.canvas.addEventListener("mouseup", () => {
+      this.canvas.removeEventListener("mousemove", mousemove_handler);
       this.drag_starting_angle = undefined;
       this.drag_starting_remaining_seconds = undefined;
     });
 
-    this.addEventListener("touchend", () => {
-      this.removeEventListener("touchmove", touchmove_handler);
+    this.canvas.addEventListener("touchend", () => {
+      this.canvas.removeEventListener("touchmove", touchmove_handler);
       this.drag_starting_angle = undefined;
       this.drag_starting_remaining_seconds = undefined;
     });
 
-    this.addEventListener("mousedown", () => {
-      this.addEventListener("mousemove", mousemove_handler);
+    this.canvas.addEventListener("mousedown", () => {
+      this.canvas.addEventListener("mousemove", mousemove_handler);
     });
 
-    this.addEventListener("touchstart", () => {
-      this.addEventListener("touchmove", touchmove_handler);
+    this.canvas.addEventListener("touchstart", () => {
+      this.canvas.addEventListener("touchmove", touchmove_handler);
     });
 
     window.addEventListener("resize", this.setup_resolution.bind(this));
@@ -345,4 +332,4 @@ class TimerCanvas extends HTMLCanvasElement {
   }
 }
 
-customElements.define("timer-canvas", TimerCanvas, { extends: "canvas" });
+new TimerCanvas(<HTMLCanvasElement>document.getElementById("timer-canvas")!!);
