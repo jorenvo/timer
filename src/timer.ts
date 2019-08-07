@@ -103,10 +103,6 @@ class TimerCanvas {
   }
 
   private setup_resolution() {
-    // todo replace with just clientWidth and Height
-    const client_width = this.canvas.clientWidth;
-    const client_height = this.canvas.clientHeight;
-
     console.log(
       "client size",
       this.canvas.clientWidth,
