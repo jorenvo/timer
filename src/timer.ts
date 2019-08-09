@@ -14,6 +14,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/* bugs:
+ * - iOS Safari
+ * - resizing when render loop has stopped
+ */
 class Coordinate {
   private _x: number;
   private _y: number;
