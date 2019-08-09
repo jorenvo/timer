@@ -278,8 +278,8 @@ class TimerCanvas {
   private mousemove_handler(event: MouseEvent | Touch) {
     const rect = (<Element>event.target).getBoundingClientRect();
     const pos: Coordinate = new Coordinate(
-      event.pageX - rect.left,
-      event.pageY - rect.top
+      event.clientX - rect.left,
+      event.clientY - rect.top
     );
 
     // center pos
