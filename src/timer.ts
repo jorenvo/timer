@@ -15,8 +15,8 @@
  */
 
 /* bugs:
- * - iOS Safari
  * - resizing when render loop has stopped
+ * - in landscape the timer overflows the edges of the screen
  */
 class Coordinate {
   private _x: number;
