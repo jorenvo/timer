@@ -5,12 +5,13 @@
         "noImplicitAny": true,
         "removeComments": true,
         "noEmitOnError": true,
-        "outFile": "dist/js/timer.js",
+        "outFile": "docs/js/timer.js",
         "sourceMap": true,
         "inlineSources": true,
         "strict": true,
         "noUnusedLocals": true,
-        "noUnusedParameters": true
+        "noUnusedParameters": true,
+        "skipLibCheck": true
     },
     "include": [
         "src/*.ts"
